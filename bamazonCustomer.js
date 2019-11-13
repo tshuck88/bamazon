@@ -47,7 +47,7 @@ function initializeApp() {
                 message: "How many would you like to buy?"
             }
         ]).then(function (answer) {
-            let chosenItem; 
+            let chosenItem;
             for (var i = 0; i < results.length; i++) {
                 if (results[i].id === parseInt(answer.product)) {
                     chosenItem = results[i];
@@ -60,16 +60,32 @@ function initializeApp() {
                     },
                     {
                         id: chosenItem.id
-                    }
-                    ], function (error) {
+                    }], function (error) {
                         if (error) throw err;
-                        console.log("Thank you for your purchase!");
-                        initializeApp();
+                        console.log("\nYour total is $" + (answer.amount * chosenItem.price).toFixed(2) + ". Thank you for your purchase!\n");
+                        restart();
                     });
             } else {
-                console.log("Sorry, there is not enough of that product in stock for your purchase. Please try again at a lower quantity.");
-                initializeApp();
+                console.log("\nSorry, there is not enough of that product in stock for your purchase. Please try again at a lower quantity.\n");
+                restart();
             }
         })
+    });
+}
+
+function restart() {
+    inquirer.prompt([
+        {
+            name: "restart",
+            type: "list",
+            choices: ["Yes", "No"],
+            message: "Do you want to buy something else?"
+        }
+    ]).then(function (answer) {
+        if(answer.restart === "Yes"){
+            initializeApp();
+        } else {
+            process.exit();
+        }
     });
 }
