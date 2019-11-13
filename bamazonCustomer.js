@@ -85,7 +85,7 @@ function restart() {
         if(answer.restart === "Yes"){
             initializeApp();
         } else {
-            process.exit();
+            connection.end();
         }
     });
 }
