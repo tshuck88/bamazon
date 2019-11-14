@@ -8,8 +8,8 @@ CREATE TABLE products (
   id INT NOT NULL AUTO_INCREMENT,
   product_name VARCHAR(45) NULL,
   department_name VARCHAR(45) NULL,
-  price DECIMAL(10,2) NULL,
-  stock_quantity INT NULL,
+  price DECIMAL(10,2) DEFAULT (0),
+  stock_quantity INT DEFAULT (0),
   PRIMARY KEY (id)
 );
 
@@ -26,13 +26,13 @@ VALUES 	("shoes", "apparel", 59.50, 100),
         ("sheets", "home goods", 39.50, 80);
 
 USE bamazonDB;
-ALTER TABLE products ADD COLUMN product_sales DECIMAL (10,2) NULL;
+ALTER TABLE products ADD COLUMN product_sales DECIMAL (10,2) DEFAULT (0);
 
 USE bamazonDB;
 CREATE TABLE departments (
   department_id INT NOT NULL AUTO_INCREMENT,
   department_name VARCHAR(45) NULL,
-  over_head_costs DECIMAL(10,2) NULL,
+  over_head_costs DECIMAL(10,2) DEFAULT (0),
   PRIMARY KEY (department_id)
 );
 
