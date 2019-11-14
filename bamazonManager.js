@@ -23,7 +23,7 @@ function initializeManager() {
     ]).then(function (answer) {
         switch (answer.start) {
             case "View Products for Sale":
-                viewProducts();
+                viewProducts(restart);
                 break;
             case "View Low Inventory":
                 viewLowInventory();
@@ -38,7 +38,7 @@ function initializeManager() {
     });
 }
 
-function viewProducts() {
+function viewProducts(callback) {
     connection.query("SELECT * FROM products", function (err, results) {
         if (err) throw err;
         const table = new Table({
@@ -50,7 +50,7 @@ function viewProducts() {
             table.push([item.id, item.product_name, item.price.toFixed(2), item.stock_quantity])
         }
         console.log(table.toString());
-        connection.end();
+        callback();
     });
 }
 
@@ -66,7 +66,7 @@ function viewLowInventory() {
             table.push([item.id, item.product_name, item.stock_quantity])
         }
         console.log(table.toString());
-        connection.end();
+        restart();
     });
 }
 
@@ -101,8 +101,8 @@ function addInventory() {
                     }
                 ], function (err, res) {
                     if (err) throw err;
-                    console.log("\nAdded " + answer.amount + " units of inventory to " + chosenItem.product_name + "!\n");
-                    connection.end();
+                    console.log("\nAdded " + answer.amount + " units of stock to " + chosenItem.product_name + "!\n");
+                    restart();
                 }
             );
         });
@@ -140,9 +140,26 @@ function addProduct() {
                 stock_quantity: parseInt(answer.quantity)
             }, function (err, res) {
                 if (err) throw err;
-                console.log("\nAdded " + answer.name + " units of inventory to products!\n");
-                connection.end();
+                console.log("\nAdded " + answer.name + " to products!\n");
+                restart();
             }
         );
+    });
+}
+
+function restart() {
+    inquirer.prompt([
+        {
+            name: "restart",
+            type: "list",
+            choices: ["Yes", "No"],
+            message: "Do you want to do anything else?"
+        }
+    ]).then(function (answer) {
+        if (answer.restart === "Yes") {
+            initializeManager();
+        } else {
+            connection.end();
+        }
     });
 }
