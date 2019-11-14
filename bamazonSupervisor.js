@@ -23,7 +23,7 @@ function initializeSupervisor() {
     ]).then(function (answer) {
         switch (answer.start) {
             case "View Product Sales by Department":
-                viewDepartments();
+                viewDepartments(restart);
                 break;
             case "Create New Department":
                 addDepartment();
@@ -32,7 +32,7 @@ function initializeSupervisor() {
     });
 }
 
-function viewDepartments() {
+function viewDepartments(callback) {
     const table = new Table({
         head: ['Department Id', 'Department Name', "Over Head Costs", "Product Sales ($)", "Total Profit ($)"],
         colWidths: [20, 20, 20, 20, 20]
@@ -45,5 +45,50 @@ function viewDepartments() {
                 table.push([department.department_id, department.department_name, department.over_head_costs, department.total_product_sales.toFixed(2), department.total_profit.toFixed(2)])
             }
             console.log(table.toString());
+            callback();
         });
+
+}
+
+function addDepartment() {
+    inquirer.prompt([
+        {
+            name: "name",
+            type: "input",
+            message: "Name of the department you would like to add?"
+        },
+        {
+            name: "costs",
+            type: "input",
+            message: "What are the over head costs of this department?"
+        }
+    ]).then(function (answer) {
+        connection.query("INSERT INTO departments SET ?",
+            {
+                department_name: answer.name,
+                over_head_costs: parseFloat(answer.costs),
+            }, function (err, res) {
+                if (err) throw err;
+                console.log("\nCreated the department " + answer.name + "!\n");
+                restart();
+            }
+        );
+    });
+}
+
+function restart() {
+    inquirer.prompt([
+        {
+            name: "restart",
+            type: "list",
+            choices: ["Yes", "No"],
+            message: "Do you want to do anything else?"
+        }
+    ]).then(function (answer) {
+        if (answer.restart === "Yes") {
+            initializeSupervisor();
+        } else {
+            connection.end();
+        }
+    });
 }
