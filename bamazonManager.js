@@ -26,7 +26,7 @@ function initializeManager() {
                 viewProducts();
                 break;
             case "View Low Inventory":
-                viewInventory();
+                viewLowInventory();
                 break;
             case "Add to Inventory":
                 addInventory();
@@ -41,13 +41,29 @@ function initializeManager() {
 function viewProducts() {
     connection.query("SELECT * FROM products", function (err, results) {
         if (err) throw err;
-        var table = new Table({
+        const table = new Table({
             head: ['Product Id', 'Product Name', "Price ($)", "Stock Quantity"],
             colWidths: [13, 20, 13, 20]
         });
         for (let i = 0; i < results.length; i++) {
             let item = results[i];
             table.push([item.id, item.product_name, item.price.toFixed(2), item.stock_quantity])
+        }
+        console.log(table.toString());
+        connection.end();
+    });
+}
+
+function viewLowInventory() {
+    connection.query("SELECT * FROM products WHERE stock_quantity < 5", function (err, results) {
+        if (err) throw err;
+        const table = new Table({
+            head: ['Product Id', 'Product Name', "Stock Quantity"],
+            colWidths: [13, 20, 20]
+        });
+        for (let i = 0; i < results.length; i++) {
+            let item = results[i];
+            table.push([item.id, item.product_name, item.stock_quantity])
         }
         console.log(table.toString());
         connection.end();
