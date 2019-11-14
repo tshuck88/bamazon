@@ -102,11 +102,47 @@ function addInventory() {
                 ], function (err, res) {
                     if (err) throw err;
                     console.log("\nAdded " + answer.amount + " units of inventory to " + chosenItem.product_name + "!\n");
-                    connection.end(); 
+                    connection.end();
                 }
-
             );
         });
+    });
+}
 
+function addProduct() {
+    inquirer.prompt([
+        {
+            name: "name",
+            type: "input",
+            message: "Name of the product you would like to add?"
+        },
+        {
+            name: "department",
+            type: "input",
+            message: "What department is the product in?"
+        },
+        {
+            name: "price",
+            type: "input",
+            message: "Price of the product?"
+        },
+        {
+            name: "quantity",
+            type: "input",
+            message: "How many units of the product are you adding?"
+        }
+    ]).then(function (answer) {
+        connection.query("INSERT INTO products SET ?",
+            {
+                product_name: answer.name,
+                department_name: answer.department,
+                price: parseFloat(answer.price),
+                stock_quantity: parseInt(answer.quantity)
+            }, function (err, res) {
+                if (err) throw err;
+                console.log("\nAdded " + answer.name + " units of inventory to products!\n");
+                connection.end();
+            }
+        );
     });
 }
