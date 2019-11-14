@@ -56,7 +56,8 @@ function initializeApp() {
             if (parseInt(answer.amount) < chosenItem.stock_quantity) {
                 connection.query("UPDATE products SET ? WHERE ?",
                     [{
-                        stock_quantity: chosenItem.stock_quantity - answer.amount
+                        stock_quantity: chosenItem.stock_quantity - answer.amount,
+                        product_sales: (answer.amount * chosenItem.price).toFixed(2)
                     },
                     {
                         id: chosenItem.id
@@ -82,7 +83,7 @@ function restart() {
             message: "Do you want to buy something else?"
         }
     ]).then(function (answer) {
-        if(answer.restart === "Yes"){
+        if (answer.restart === "Yes") {
             initializeApp();
         } else {
             connection.end();
