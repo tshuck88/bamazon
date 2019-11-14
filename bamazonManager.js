@@ -69,3 +69,44 @@ function viewLowInventory() {
         connection.end();
     });
 }
+
+function addInventory() {
+    connection.query("SELECT * FROM products", function (err, results) {
+        if (err) throw err;
+        inquirer.prompt([
+            {
+                name: "product",
+                type: "input",
+                message: "Enter the id of the product you would like to add more inventory to:"
+            },
+            {
+                name: "amount",
+                type: "input",
+                message: "How many units of the product would you like to add?"
+            }
+        ]).then(function (answer) {
+            let chosenItem;
+            for (var i = 0; i < results.length; i++) {
+                if (results[i].id === parseInt(answer.product)) {
+                    chosenItem = results[i];
+                }
+            }
+            connection.query("UPDATE products SET ? WHERE ?",
+                [
+                    {
+                        stock_quantity: chosenItem.stock_quantity + parseInt(answer.amount)
+                    },
+                    {
+                        id: parseInt(answer.product)
+                    }
+                ], function (err, res) {
+                    if (err) throw err;
+                    console.log("\nAdded " + answer.amount + " units of inventory to " + chosenItem.product_name + "!\n");
+                    connection.end(); 
+                }
+
+            );
+        });
+
+    });
+}
