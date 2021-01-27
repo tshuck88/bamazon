@@ -10,7 +10,7 @@ The customer view allows the user to purchase items in stock. Users can access t
 
 ## Manager View
 
-Users can access the manager view by typing `node bamazonCustomer.js` in their terminal. The manager view allows users to manage the store by selecting one of the following tasks:
+Users can access the manager view by typing `node bamazonManager.js` in their terminal. The manager view allows users to manage the store by selecting one of the following tasks:
 
 * View products for sale
 * View low inventory
